@@ -6,6 +6,7 @@ import Semester from './components/Semester.jsx'
 import StudentVoices from './components/StudentVoices.jsx'
 import ApplySteps from './components/ApplySteps.jsx'
 import SocialProof from './components/SocialProof.jsx'
+import Programme from './components/Programme.jsx'
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
       <StudentVoices />
       <ApplySteps />
       <SocialProof />
+      <Programme />
     </div>
   )
 }
