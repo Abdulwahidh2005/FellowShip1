@@ -6,8 +6,8 @@ import Semester from './components/Semester.jsx'
 import EvidenceShift from './components/EvidenceShift.jsx'
 import StudentVoices from './components/StudentVoices.jsx'
 import ApplySteps from './components/ApplySteps.jsx'
-import SocialProof from './components/SocialProof.jsx'
 import Programme from './components/Programme.jsx'
+import Velorah from './components/Velorah.jsx'
 
 export default function App() {
   return (
@@ -23,7 +23,7 @@ export default function App() {
       <EvidenceShift />
       <StudentVoices />
       <ApplySteps />
-      <SocialProof />
+      <Velorah />
     </div>
   )
 }
