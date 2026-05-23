@@ -3,7 +3,7 @@ export default function Navbar() {
     { label: 'The Programme', href: '#programme' },
     { label: 'The Journey', href: '#journey' },
     { label: 'What You Leave With', href: '#outcomes' },
-    { label: 'How To Join', href: '#join' },
+    { label: 'How To Join', href: '#apply' },
   ]
 
   return (
