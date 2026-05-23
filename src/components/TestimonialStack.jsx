@@ -20,7 +20,7 @@ export default function TestimonialStack() {
       {/* The animated Stack */}
       <div
         className="relative z-10"
-        style={{ width: 420, height: 300 }}
+        style={{ width: 500, height: 360 }}
       >
         <Stack
           cards={cards}

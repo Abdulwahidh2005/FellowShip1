@@ -8,6 +8,7 @@ import StudentVoices from './components/StudentVoices.jsx'
 import ApplySteps from './components/ApplySteps.jsx'
 import Programme from './components/Programme.jsx'
 import Velorah from './components/Velorah.jsx'
+import FlowArt, { FlowSection } from './components/StoryScroll.jsx'
 
 export default function App() {
   return (
@@ -16,8 +17,16 @@ export default function App() {
       <main className="mx-auto max-w-7xl px-6 pt-40 pb-12 lg:px-10">
         <Hero />
       </main>
-      <WhatRemains />
-      <Programme />
+
+      <FlowArt ariaLabel="Why MSW-REACT">
+        <FlowSection ariaLabel="What remains">
+          <WhatRemains />
+        </FlowSection>
+        <FlowSection ariaLabel="The programme">
+          <Programme />
+        </FlowSection>
+      </FlowArt>
+
       <Outcomes />
       <Semester />
       <EvidenceShift />

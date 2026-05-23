@@ -7,6 +7,7 @@ export const testimonials = [
     company: 'RuralEd',
     initials: 'PR',
     avatarBg: '#C2410C',
+    image: 'https://randomuser.me/api/portraits/women/44.jpg',
     verified: true,
   },
   {
@@ -17,6 +18,7 @@ export const testimonials = [
     company: 'KCLAS',
     initials: 'AK',
     avatarBg: '#0F766E',
+    image: 'https://randomuser.me/api/portraits/men/45.jpg',
     verified: true,
   },
   {
@@ -27,6 +29,7 @@ export const testimonials = [
     company: 'SII',
     initials: 'MI',
     avatarBg: '#7C3AED',
+    image: 'https://randomuser.me/api/portraits/women/68.jpg',
     verified: true,
   },
   {
@@ -37,6 +40,7 @@ export const testimonials = [
     company: 'Sanchaya',
     initials: 'KS',
     avatarBg: '#1D4ED8',
+    image: 'https://randomuser.me/api/portraits/men/22.jpg',
     verified: true,
   },
 ]

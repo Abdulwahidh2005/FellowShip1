@@ -19,23 +19,34 @@ function AvatarButton({ person, isActive, onSelect, index }) {
           ? 'z-20 h-24 w-24 -translate-y-2 scale-105 ring-3 ring-violet-600 ring-offset-2 ring-offset-canvas'
           : 'z-0 h-20 w-20 opacity-45 grayscale hover:z-10 hover:-translate-y-1 hover:opacity-90 hover:grayscale-0'
       }`}
-      style={{ backgroundColor: person.avatarBg }}
+      style={{ backgroundColor: person.image ? undefined : person.avatarBg }}
     >
-      <span
-        className="absolute inset-0 bg-gradient-to-br from-white/35 via-transparent to-black/20"
-        aria-hidden="true"
-      />
-      <span
-        className="absolute top-[13%] h-[30%] w-[34%] rounded-full bg-white/45 shadow-inner"
-        aria-hidden="true"
-      />
-      <span
-        className="absolute bottom-[11%] h-[44%] w-[70%] rounded-t-full bg-black/20"
-        aria-hidden="true"
-      />
-      <span className="relative z-10 translate-y-1 text-lg font-extrabold tracking-wide text-white">
-        {person.initials}
-      </span>
+      {person.image ? (
+        <img
+          src={person.image}
+          alt={person.name}
+          className="absolute inset-0 h-full w-full object-cover"
+          draggable="false"
+        />
+      ) : (
+        <>
+          <span
+            className="absolute inset-0 bg-gradient-to-br from-white/35 via-transparent to-black/20"
+            aria-hidden="true"
+          />
+          <span
+            className="absolute top-[13%] h-[30%] w-[34%] rounded-full bg-white/45 shadow-inner"
+            aria-hidden="true"
+          />
+          <span
+            className="absolute bottom-[11%] h-[44%] w-[70%] rounded-t-full bg-black/20"
+            aria-hidden="true"
+          />
+          <span className="relative z-10 translate-y-1 text-lg font-extrabold tracking-wide text-white">
+            {person.initials}
+          </span>
+        </>
+      )}
     </button>
   )
 }

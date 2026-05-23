@@ -1,21 +1,27 @@
-import { motion, useScroll, useTransform } from 'motion/react'
+import { motion, useScroll, useSpring, useTransform } from 'motion/react'
 import { useRef } from 'react'
 
 export default function Velorah() {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ['start end', 'start start'],
+    offset: ['start end', 'start 10%'],
   })
 
-  const y = useTransform(scrollYProgress, [0, 1], ['10%', '0%'])
-  const radius = useTransform(scrollYProgress, [0, 1], [56, 0])
+  const smooth = useSpring(scrollYProgress, {
+    stiffness: 60,
+    damping: 22,
+    restDelta: 0.001,
+  })
+
+  const y = useTransform(smooth, [0, 1], ['28%', '0%'])
+  const radius = useTransform(smooth, [0, 1], [80, 0])
   const shadow = useTransform(
-    scrollYProgress,
+    smooth,
     [0, 1],
     [
-      '0 -40px 70px -10px rgba(0,0,0,0.55)',
-      '0 -40px 70px -10px rgba(0,0,0,0)',
+      '0 -55px 90px -10px rgba(0,0,0,0.6)',
+      '0 -55px 90px -10px rgba(0,0,0,0)',
     ],
   )
 
