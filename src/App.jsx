@@ -3,6 +3,7 @@ import Hero from './components/Hero.jsx'
 import WhatRemains from './components/WhatRemains.jsx'
 import Outcomes from './components/Outcomes.jsx'
 import Semester from './components/Semester.jsx'
+import EvidenceShift from './components/EvidenceShift.jsx'
 import StudentVoices from './components/StudentVoices.jsx'
 import ApplySteps from './components/ApplySteps.jsx'
 import SocialProof from './components/SocialProof.jsx'
@@ -16,12 +17,13 @@ export default function App() {
         <Hero />
       </main>
       <WhatRemains />
+      <Programme />
       <Outcomes />
       <Semester />
+      <EvidenceShift />
       <StudentVoices />
       <ApplySteps />
       <SocialProof />
-      <Programme />
     </div>
   )
 }
