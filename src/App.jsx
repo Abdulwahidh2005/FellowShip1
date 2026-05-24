@@ -17,16 +17,8 @@ export default function App() {
       <main className="mx-auto max-w-7xl px-6 pt-40 pb-12 lg:px-10">
         <Hero />
       </main>
-
-      <FlowArt ariaLabel="Why MSW-REACT">
-        <FlowSection ariaLabel="What remains">
-          <WhatRemains />
-        </FlowSection>
-        <FlowSection ariaLabel="The programme">
-          <Programme />
-        </FlowSection>
-      </FlowArt>
-
+      <WhatRemains />
+      <Programme />
       <Outcomes />
       <Semester />
       <EvidenceShift />
