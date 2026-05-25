@@ -1,4 +1,5 @@
 import { motion, useScroll, useSpring, useTransform } from 'motion/react'
+import { Link } from 'react-router-dom'
 import { useRef } from 'react'
 
 export default function Velorah() {
@@ -96,9 +97,9 @@ export default function Velorah() {
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.7, ease: 'easeOut', delay: 0.25 }}
         >
-          A small cohort. Selective entry. One problem per student, one
-          community, four semesters that produce something permanent. The 2026
-          batch begins this year.
+          A small cohort. Selective entry. One problem per team, one
+          community, one venture that outlasts your degree. The 2026 batch
+          begins this year.
         </motion.p>
 
         <motion.div
@@ -108,16 +109,16 @@ export default function Velorah() {
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.7, ease: 'easeOut', delay: 0.4 }}
         >
-          <a
-            href="#apply"
+          <Link
+            to="/apply"
             className="group relative inline-flex items-center justify-center overflow-hidden bg-accent px-10 py-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-white transition-transform duration-300 ease-out hover:-translate-y-0.5"
           >
             <span
               aria-hidden="true"
               className="absolute inset-y-0 -left-1/2 w-1/2 -skew-x-12 bg-white/20 opacity-0 transition-all duration-700 ease-out group-hover:left-[120%] group-hover:opacity-100"
             />
-            <span className="relative z-10">Apply to the 2026 Batch</span>
-          </a>
+            <span className="relative z-10">Apply to 2026 Batch</span>
+          </Link>
 
           <span
             className="text-[12px] font-medium uppercase tracking-[0.2em]"
@@ -126,8 +127,8 @@ export default function Velorah() {
             or
           </span>
 
-          <a
-            href="#contact"
+          <Link
+            to="/contact"
             className="inline-flex items-center justify-center border px-10 py-5 text-[13px] font-bold uppercase tracking-[0.18em] transition-colors duration-300 ease-out"
             style={{
               color: '#f5efe6',
@@ -143,7 +144,7 @@ export default function Velorah() {
             }}
           >
             Talk to Our Team
-          </a>
+          </Link>
         </motion.div>
 
         <motion.p
@@ -154,8 +155,7 @@ export default function Velorah() {
           viewport={{ once: true, amount: 0.6 }}
           transition={{ duration: 0.8, ease: 'easeOut', delay: 0.6 }}
         >
-          MSW-REACT · Exclusively at KCLAS · Kumaraguru College of Liberal Arts
-          and Science · Coimbatore
+          REACT Fellowship · Kumaraguru Institutions · Coimbatore
         </motion.p>
       </div>
     </motion.section>

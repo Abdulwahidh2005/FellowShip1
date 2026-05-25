@@ -4,6 +4,7 @@ import {
   useScroll,
   useTransform,
 } from 'motion/react'
+import { Link } from 'react-router-dom'
 import { useRef, useState } from 'react'
 
 const steps = [
@@ -11,25 +12,37 @@ const steps = [
     number: '01',
     title: 'Apply',
     description:
-      'Tell us about yourself and a community problem you have witnessed. Takes ten minutes. No CV. No resume. Just you and a problem.',
+      'Tell us about yourself.',
   },
   {
     number: '02',
-    title: 'Written Entrance',
+    title: 'Orientation',
     description:
-      'A short written exercise. There are no right answers. There are revealing ones. We want to understand how you think - not what you know.',
+      'Meet the programme, the mentors, and your potential cohort. Ask everything. This is where you decide if REACT is right for you, not just the other way around.',
   },
   {
     number: '03',
-    title: 'Orientation',
+    title: 'Written Entrance',
     description:
-      'Meet the programme, the mentors, and your potential cohort. Ask everything. This is where you decide if we are right for you - not just the other way around.',
+      'A short written exercise. There are no right answers. There are revealing ones. We want to understand how you think, not what you know.',
   },
   {
     number: '04',
-    title: 'Begin',
+    title: 'Discussion',
     description:
-      'Confirm MSW-REACT as your track. Your Semester 1 begins with the 14-day India Immersion. The problem you will spend two years solving is waiting.',
+      'A structured conversation with the selection team. One problem. One room. One honest exchange.',
+  },
+  {
+    number: '05',
+    title: 'Interview',
+    description:
+      'A personal conversation about who you are, what you have seen, and what you intend to build.',
+  },
+  {
+    number: '06',
+    title: 'Results and Induction',
+    description:
+      'Selected fellows are notified and welcomed into the cohort. Your fellowship begins with the 14-day Civic Immersion. The problem you will spend two years solving is waiting.',
   },
 ]
 
@@ -66,12 +79,12 @@ export default function ApplySteps() {
 
   return (
     <section
-      id="apply"
+      id="apply-steps"
       ref={sectionRef}
       className="bg-canvas scroll-mt-28"
     >
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-x-10 gap-y-14 px-6 pb-10 pt-20 md:grid-cols-2 lg:gap-x-16 lg:px-10 lg:pb-12 lg:pt-24">
-        {/* LEFT: pinned CTA panel — locked at viewport center for the full section */}
+        {/* LEFT: pinned CTA panel */}
         <div className="md:sticky md:top-0 md:flex md:h-screen md:items-center">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -79,38 +92,40 @@ export default function ApplySteps() {
             viewport={{ once: true, amount: 0.35 }}
             transition={{ duration: 0.55, ease: 'easeOut' }}
           >
-            <h2 className="font-serif text-[clamp(3.3rem,6.2vw,5.3rem)] font-semibold leading-none text-ink">
-              Four steps.
+            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-accent">
+              How To Join
+            </p>
+            <h2 className="mt-5 font-serif text-[clamp(3rem,5.8vw,4.8rem)] font-semibold leading-none text-ink">
+              Applying to REACT.
             </h2>
             <p className="mt-8 max-w-2xl text-[18px] leading-loose text-neutral-700">
-              Straightforward. No long essays. No CV. A conversation that starts
-              with a problem you have witnessed.
+              Straightforward. A conversation that starts with a problem you
+              have witnessed.
             </p>
 
             <p className="mt-10 max-w-xl font-serif-italic text-[19px] leading-relaxed text-neutral-500">
-              Admission is direct through the REACT domain. You do not need to
-              apply to KCLAS separately before applying to MSW-REACT. We will
-              walk you through every step personally.
+              You apply once, directly to REACT. We walk you through everything
+              personally.
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
-              <a
-                href="#apply"
+              <Link
+                to="/apply"
                 className="inline-flex min-h-16 items-center justify-center bg-accent px-9 py-4 text-center text-[13px] font-extrabold uppercase tracking-[0.16em] text-white transition hover:bg-[#cf4f22] sm:min-w-72"
               >
-                Apply to the 2026 Batch
-              </a>
-              <a
-                href="#contact"
+                Apply to 2026 Batch
+              </Link>
+              <Link
+                to="/contact"
                 className="inline-flex min-h-16 items-center justify-center border border-neutral-300 px-9 py-4 text-center text-[13px] font-bold uppercase tracking-[0.16em] text-ink transition hover:border-neutral-500 hover:bg-white/60 sm:min-w-56"
               >
                 Talk to Our Team
-              </a>
+              </Link>
             </div>
           </motion.div>
         </div>
 
-        {/* RIGHT: rail + 4 stacked step blocks, scrolls naturally */}
+        {/* RIGHT: rail + step blocks */}
         <div className="relative">
           <div
             className="pointer-events-none absolute left-8 top-[16vh] bottom-[18vh] w-[5px] -translate-x-1/2 rounded-full bg-[#5b4d3f]"
@@ -125,7 +140,7 @@ export default function ApplySteps() {
           {steps.map((step, index) => (
             <article
               key={step.number}
-              className="relative grid grid-cols-[4rem_1fr] items-center gap-6 py-[12vh] first:pt-[8vh] last:pb-[6vh] sm:gap-8"
+              className="relative grid grid-cols-[4rem_1fr] items-center gap-6 py-[10vh] first:pt-[8vh] last:pb-[6vh] sm:gap-8"
             >
               <div className="flex justify-center">
                 <CircleBadge
@@ -137,10 +152,10 @@ export default function ApplySteps() {
                 <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-accent">
                   Step {step.number}
                 </p>
-                <h3 className="mt-5 font-serif text-[clamp(2.5rem,4vw,4.9rem)] font-semibold leading-none text-ink lg:text-[clamp(3rem,5vw,5.4rem)]">
+                <h3 className="mt-5 font-serif text-[clamp(2.3rem,3.6vw,4.2rem)] font-semibold leading-none text-ink lg:text-[clamp(2.6rem,4.4vw,4.8rem)]">
                   {step.title}
                 </h3>
-                <p className="mt-7 max-w-xl text-[18px] leading-relaxed text-neutral-700">
+                <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-neutral-700">
                   {step.description}
                 </p>
               </div>

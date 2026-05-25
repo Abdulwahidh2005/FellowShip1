@@ -134,7 +134,7 @@ export default function StudentVoices() {
             Do not take our word for it.
           </h2>
           <p className="mt-7 max-w-lg text-[18px] leading-relaxed text-neutral-600">
-            Hear from the people building inside MSW-REACT right now.
+            Hear from the people building inside REACT right now.
           </p>
         </div>
       </div>
