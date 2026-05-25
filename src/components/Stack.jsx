@@ -1,11 +1,24 @@
-import { motion, useMotionValue, useTransform } from 'motion/react'
-import { useState, useEffect } from 'react'
+import { animate, motion, useMotionValue, useTransform } from 'motion/react'
+import { useEffect, useRef, useState } from 'react'
 
-function CardRotate({ children, onSendToBack, sensitivity, disableDrag = false }) {
+function CardRotate({
+  children,
+  onSendToBack,
+  sensitivity,
+  disableDrag = false,
+  cardId,
+  registerMVs,
+}) {
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const rotateX = useTransform(y, [-100, 100], [60, -60])
   const rotateY = useTransform(x, [-100, 100], [-60, 60])
+
+  useEffect(() => {
+    if (!registerMVs || cardId == null) return
+    registerMVs(cardId, { x, y })
+    return () => registerMVs(cardId, null)
+  }, [cardId, registerMVs, x, y])
 
   function handleDragEnd(_, info) {
     if (Math.abs(info.offset.x) > sensitivity || Math.abs(info.offset.y) > sensitivity) {
@@ -18,7 +31,7 @@ function CardRotate({ children, onSendToBack, sensitivity, disableDrag = false }
 
   if (disableDrag) {
     return (
-      <motion.div className="absolute inset-0 cursor-pointer" style={{ x: 0, y: 0 }}>
+      <motion.div className="absolute inset-0 cursor-pointer" style={{ x, y, rotateX, rotateY }}>
         {children}
       </motion.div>
     )
@@ -53,6 +66,8 @@ export default function Stack({
 }) {
   const [isMobile, setIsMobile] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [throwingId, setThrowingId] = useState(null)
+  const cardMVs = useRef({})
 
   useEffect(() => {
     const checkMobile = () => {
@@ -80,19 +95,71 @@ export default function Stack({
     setStack((prev) => {
       const newStack = [...prev]
       const index = newStack.findIndex((card) => card.id === id)
+      if (index === -1) return prev
       const [card] = newStack.splice(index, 1)
       newStack.unshift(card)
       return newStack
     })
   }
 
+  const registerMVs = (id, mvs) => {
+    if (mvs === null) {
+      delete cardMVs.current[id]
+    } else {
+      cardMVs.current[id] = mvs
+    }
+  }
+
   useEffect(() => {
-    if (autoplay && stack.length > 1 && !isPaused) {
-      const interval = setInterval(() => {
-        const topCardId = stack[stack.length - 1].id
-        sendToBack(topCardId)
-      }, autoplayDelay)
-      return () => clearInterval(interval)
+    if (!autoplay || stack.length <= 1 || isPaused) return
+
+    let cancelled = false
+
+    const tick = async () => {
+      if (cancelled) return
+      const topCard = stack[stack.length - 1]
+      const mvs = cardMVs.current[topCard.id]
+      if (!mvs) {
+        sendToBack(topCard.id)
+        return
+      }
+
+      setThrowingId(topCard.id)
+
+      // Pull: animate the card off to the right with a slight upward arc.
+      // useTransform on x/y in CardRotate gives free rotateY/rotateX tilt as it moves.
+      const pullOpts = { duration: 0.28, ease: [0.4, 0, 0.2, 1] }
+      const returnOpts = { duration: 0.42, ease: [0, 0, 0.2, 1] }
+
+      animate(mvs.y, -28, pullOpts)
+      const pullX = animate(mvs.x, 220, pullOpts)
+
+      try {
+        await pullX
+      } catch {
+        // animation cancelled — bail out gracefully
+      }
+
+      if (cancelled) {
+        setThrowingId(null)
+        return
+      }
+
+      // Hand off: reorder the deck so the next render places this card at the back.
+      sendToBack(topCard.id)
+
+      // Elastic return: the card eases back from (220, -28) to (0, 0) while the
+      // outer wrapper springs into its new back-of-stack scale/rotate.
+      animate(mvs.x, 0, returnOpts)
+      animate(mvs.y, 0, returnOpts)
+
+      setThrowingId(null)
+    }
+
+    const interval = setInterval(tick, autoplayDelay)
+    return () => {
+      cancelled = true
+      clearInterval(interval)
     }
   }, [autoplay, autoplayDelay, stack, isPaused])
 
@@ -105,16 +172,19 @@ export default function Stack({
     >
       {stack.map((card, index) => {
         const randomRotate = randomRotation ? Math.random() * 10 - 5 : 0
+        const isThrowing = throwingId === card.id
         return (
           <CardRotate
             key={card.id}
+            cardId={card.id}
+            registerMVs={registerMVs}
             onSendToBack={() => sendToBack(card.id)}
             sensitivity={sensitivity}
-            disableDrag={shouldDisableDrag}
+            disableDrag={shouldDisableDrag || isThrowing}
           >
             <motion.div
               className="h-full w-full overflow-hidden rounded-2xl"
-              onClick={() => shouldEnableClick && sendToBack(card.id)}
+              onClick={() => shouldEnableClick && !isThrowing && sendToBack(card.id)}
               animate={{
                 rotateZ: (stack.length - index - 1) * 4 + randomRotate,
                 scale: 1 + index * 0.06 - stack.length * 0.06,
