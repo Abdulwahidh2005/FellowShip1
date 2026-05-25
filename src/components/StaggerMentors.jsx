@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 
 const SQRT_5000 = Math.sqrt(5000)
-const AUTO_ROTATE_MS = 3800
+const AUTO_ROTATE_MS = 4000
+const MOBILE_BREAKPOINT = 640
 
 const initialMentors = [
   {
@@ -62,7 +64,36 @@ const initialMentors = [
   },
 ].map((m, i) => ({ ...m, tempId: i }))
 
-function MentorCard({ position, mentor, handleMove, cardSize }) {
+function MentorAttribution({ mentor, light }) {
+  return (
+    <div className={light ? 'text-white' : 'text-ink'}>
+      <p
+        className={`text-[13px] font-bold leading-tight sm:text-[14px] ${
+          light ? 'text-white' : 'text-ink'
+        }`}
+      >
+        {mentor.name}
+      </p>
+      <p
+        className={`mt-1 text-[11.5px] leading-snug sm:text-[12px] ${
+          light ? 'text-white/80' : 'text-neutral-600'
+        }`}
+      >
+        {mentor.role}
+      </p>
+      <p
+        className={`mt-2 text-[9.5px] font-bold uppercase tracking-[0.18em] sm:text-[10px] ${
+          light ? 'text-white/80' : 'text-accent'
+        }`}
+      >
+        Domain · {mentor.domain}
+      </p>
+    </div>
+  )
+}
+
+// Desktop stagger-fan card
+function FanCard({ position, mentor, handleMove, cardSize }) {
   const isCenter = position === 0
 
   return (
@@ -109,7 +140,7 @@ function MentorCard({ position, mentor, handleMove, cardSize }) {
       />
 
       <h3
-        className={`font-serif text-[0.98rem] font-semibold leading-snug sm:text-[1.1rem] ${
+        className={`line-clamp-5 font-serif text-[0.98rem] font-semibold leading-snug sm:text-[1.1rem] ${
           isCenter ? 'text-white' : 'text-ink'
         }`}
       >
@@ -117,34 +148,46 @@ function MentorCard({ position, mentor, handleMove, cardSize }) {
       </h3>
 
       <div className="absolute bottom-6 left-6 right-6 sm:bottom-7 sm:left-7 sm:right-7">
-        <p
-          className={`text-[13px] font-bold leading-tight sm:text-[14px] ${
-            isCenter ? 'text-white' : 'text-ink'
-          }`}
-        >
-          {mentor.name}
-        </p>
-        <p
-          className={`mt-1 text-[11.5px] leading-snug sm:text-[12px] ${
-            isCenter ? 'text-white/80' : 'text-neutral-600'
-          }`}
-        >
-          {mentor.role}
-        </p>
-        <p
-          className={`mt-2 text-[9.5px] font-bold uppercase tracking-[0.18em] sm:text-[10px] ${
-            isCenter ? 'text-white/80' : 'text-accent'
-          }`}
-        >
-          Domain · {mentor.domain}
-        </p>
+        <MentorAttribution mentor={mentor} light={isCenter} />
       </div>
     </div>
   )
 }
 
+// Mobile single-card carousel slide
+function MobileCard({ mentor, onTap }) {
+  return (
+    <motion.article
+      key={mentor.tempId}
+      initial={{ opacity: 0, x: 24 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -24 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      onClick={onTap}
+      className="absolute inset-0 flex flex-col rounded-2xl border-2 border-accent bg-accent p-6 text-white shadow-[0_8px_0_4px_rgba(20,14,8,0.18)]"
+    >
+      <img
+        src={mentor.image}
+        alt={mentor.name}
+        draggable="false"
+        className="mb-4 h-16 w-14 bg-neutral-200 object-cover object-top"
+        style={{ boxShadow: '3px 3px 0px rgba(255,255,255,0.35)' }}
+      />
+
+      <p className="font-serif text-[1.05rem] font-semibold leading-snug text-white">
+        “{mentor.quote}”
+      </p>
+
+      <div className="mt-auto border-t border-white/20 pt-4">
+        <MentorAttribution mentor={mentor} light />
+      </div>
+    </motion.article>
+  )
+}
+
 export default function StaggerMentors() {
   const [cardSize, setCardSize] = useState(280)
+  const [isMobile, setIsMobile] = useState(false)
   const [list, setList] = useState(initialMentors)
   const [paused, setPaused] = useState(false)
 
@@ -171,7 +214,8 @@ export default function StaggerMentors() {
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth
-      if (w < 640) setCardSize(240)
+      setIsMobile(w < MOBILE_BREAKPOINT)
+      if (w < MOBILE_BREAKPOINT) setCardSize(0)
       else if (w < 1024) setCardSize(280)
       else setCardSize(320)
     }
@@ -186,20 +230,53 @@ export default function StaggerMentors() {
     return () => clearInterval(t)
   }, [paused])
 
+  // ─── Mobile: single-card carousel ──────────────────────────────────────────
+  if (isMobile) {
+    const current = list[Math.floor(list.length / 2)]
+    return (
+      <div
+        className="relative mx-auto w-full max-w-sm px-6"
+        onTouchStart={() => setPaused(true)}
+        onTouchEnd={() => setPaused(false)}
+      >
+        <div className="relative h-[380px] w-full">
+          <AnimatePresence mode="wait">
+            <MobileCard
+              key={current.tempId}
+              mentor={current}
+              onTap={() => handleMove(1)}
+            />
+          </AnimatePresence>
+        </div>
+
+        <div className="mt-4 flex items-center justify-center gap-1.5">
+          {list.map((m, i) => (
+            <span
+              key={m.tempId}
+              className={`h-1.5 rounded-full transition-all ${
+                i === Math.floor(list.length / 2)
+                  ? 'w-6 bg-accent'
+                  : 'w-1.5 bg-neutral-300'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  // ─── Desktop: stagger fan ──────────────────────────────────────────────────
   return (
     <div
       className="relative w-full overflow-hidden"
       style={{ height: cardSize + 140 }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      onTouchStart={() => setPaused(true)}
-      onTouchEnd={() => setPaused(false)}
     >
       {list.map((mentor, index) => {
-        // symmetric distribution: 7 cards → positions -3, -2, -1, 0, 1, 2, 3
         const position = index - Math.floor(list.length / 2)
         return (
-          <MentorCard
+          <FanCard
             key={mentor.tempId}
             mentor={mentor}
             handleMove={handleMove}

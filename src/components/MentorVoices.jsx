@@ -4,7 +4,7 @@ export default function MentorVoices() {
   return (
     <section
       id="mentors"
-      className="relative z-10 flex min-h-screen flex-col justify-center overflow-hidden bg-canvas py-16 lg:py-20"
+      className="relative z-10 flex min-h-[640px] flex-col justify-center overflow-hidden bg-canvas py-16 sm:min-h-screen lg:py-20"
     >
       <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">
         <div className="max-w-3xl">

@@ -6,10 +6,10 @@ export default function TestimonialStack() {
   const cards = testimonials.map((t) => <TestimonialCard data={t} />)
 
   return (
-    <div className="relative">
+    <div className="relative w-full max-w-[500px] overflow-hidden">
       {/* Crosshair guide lines framing the stack */}
       <div
-        className="pointer-events-none absolute -inset-10 z-0"
+        className="pointer-events-none absolute -inset-6 z-0 sm:-inset-10"
         aria-hidden="true"
       >
         <span className="absolute left-0 right-0 top-1/2 h-px bg-neutral-300/70" />
@@ -20,7 +20,10 @@ export default function TestimonialStack() {
       {/* The animated Stack */}
       <div
         className="relative z-10"
-        style={{ width: 500, height: 360 }}
+        style={{
+          width: 'min(500px, 100%)',
+          height: 'clamp(280px, 78vw, 360px)',
+        }}
       >
         <Stack
           cards={cards}
