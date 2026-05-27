@@ -103,11 +103,6 @@ export default function ApplySteps() {
               have witnessed.
             </p>
 
-            <p className="mt-10 max-w-xl font-serif-italic text-[19px] leading-relaxed text-neutral-500">
-              You apply once, directly to REACT. We walk you through everything
-              personally.
-            </p>
-
             <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
               <Link
                 to="/apply"

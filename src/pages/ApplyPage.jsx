@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import Navbar from '../components/Navbar.jsx'
@@ -84,7 +84,7 @@ function TrackCard({ trackKey, info, selected, onSelect }) {
   )
 }
 
-function Field({ label, type = 'text', name, required, placeholder }) {
+function Field({ label, type = 'text', name, required, placeholder, value, onChange }) {
   return (
     <label className="flex flex-col gap-2 text-[13px] font-semibold uppercase tracking-[0.16em] text-neutral-600">
       <span>
@@ -96,14 +96,84 @@ function Field({ label, type = 'text', name, required, placeholder }) {
         name={name}
         required={required}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
         className="rounded-none border border-black/15 bg-white px-4 py-3 text-[15px] font-normal normal-case tracking-normal text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
       />
     </label>
   )
 }
 
+const fileToBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = reader.result
+      const comma = result.indexOf(',')
+      resolve(comma >= 0 ? result.slice(comma + 1) : result)
+    }
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(file)
+  })
+
 export default function ApplyPage() {
   const [selected, setSelected] = useState(null)
+  const [form, setForm] = useState({ fullName: '', email: '', phone: '' })
+  const [resume, setResume] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+  const formRef = useRef(null)
+
+  const update = (key) => (e) =>
+    setForm((f) => ({ ...f, [key]: e.target.value }))
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (!selected || submitting) return
+    setSubmitting(true)
+    setErrorMsg('')
+    try {
+      const endpoint = import.meta.env.VITE_APPLY_ENDPOINT
+      if (!endpoint) throw new Error('Missing VITE_APPLY_ENDPOINT')
+
+      const resumePart = resume
+        ? {
+            fileName: resume.name,
+            mimeType: resume.type || 'application/octet-stream',
+            data: await fileToBase64(resume),
+          }
+        : null
+
+      const payload = {
+        track: selected,
+        fullName: form.fullName,
+        email: form.email,
+        phone: form.phone,
+        resume: resumePart,
+      }
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+        redirect: 'follow',
+      })
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`)
+      const json = await res.json().catch(() => ({}))
+      if (json.status && json.status !== 'ok') {
+        throw new Error(json.message || 'Submission rejected')
+      }
+      setSubmitted(true)
+      setForm({ fullName: '', email: '', phone: '' })
+      setResume(null)
+      formRef.current?.reset()
+    } catch (err) {
+      setErrorMsg(err.message || 'Something went wrong. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <>
@@ -162,62 +232,91 @@ export default function ApplyPage() {
           )}
         </AnimatePresence>
 
-        <form
-          className="mt-14"
-          onSubmit={(e) => {
-            e.preventDefault()
-            // TODO: admissions URL — link to be supplied by KCLAS admissions team
-            window.location.href = '#'
-          }}
-        >
-          <h2 className="font-serif text-[clamp(1.8rem,3vw,2.4rem)] font-semibold leading-tight text-ink">
-            A few details to get you in.
-          </h2>
+        {submitted ? (
+          <motion.section
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="mt-14 border-l-[3px] border-accent bg-[#f1ece2] px-7 py-9 sm:px-9 sm:py-12"
+          >
+            <p className="font-serif text-[clamp(1.6rem,3vw,2.2rem)] font-semibold leading-tight text-ink">
+              Application received.
+            </p>
+            <p className="mt-6 font-serif-italic text-[1.05rem] leading-[1.65] text-[#5b4d3f]">
+              We have your details and resume. Our team will reach out shortly with
+              next steps.
+            </p>
+          </motion.section>
+        ) : (
+          <form ref={formRef} className="mt-14" onSubmit={handleSubmit}>
+            <h2 className="font-serif text-[clamp(1.8rem,3vw,2.4rem)] font-semibold leading-tight text-ink">
+              A few details to get you in.
+            </h2>
 
-          <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <Field label="Full Name" name="fullName" required />
-            <Field label="Email Address" type="email" name="email" required />
-            <Field
-              label="Phone Number (WhatsApp)"
-              type="tel"
-              name="phone"
-              required
-            />
-            <label className="flex flex-col gap-2 text-[13px] font-semibold uppercase tracking-[0.16em] text-neutral-600">
-              <span>
-                Attach Resume<span className="ml-1 text-accent">*</span>
-              </span>
-              <input
-                type="file"
-                name="resume"
+            <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <Field
+                label="Full Name"
+                name="fullName"
                 required
-                accept=".pdf,.doc,.docx"
-                className="cursor-pointer rounded-none border border-black/15 bg-white px-4 py-3 text-[14px] font-normal normal-case tracking-normal text-ink outline-none transition file:mr-4 file:border-0 file:bg-ink file:px-4 file:py-2 file:text-[12px] file:font-bold file:uppercase file:tracking-[0.14em] file:text-white hover:file:bg-neutral-800 focus:border-accent focus:ring-2 focus:ring-accent/30"
+                value={form.fullName}
+                onChange={update('fullName')}
               />
-            </label>
-          </div>
+              <Field
+                label="Email Address"
+                type="email"
+                name="email"
+                required
+                value={form.email}
+                onChange={update('email')}
+              />
+              <Field
+                label="Phone Number (WhatsApp)"
+                type="tel"
+                name="phone"
+                required
+                value={form.phone}
+                onChange={update('phone')}
+              />
+              <label className="flex flex-col gap-2 text-[13px] font-semibold uppercase tracking-[0.16em] text-neutral-600">
+                <span>
+                  Attach Resume<span className="ml-1 text-accent">*</span>
+                </span>
+                <input
+                  type="file"
+                  name="resume"
+                  required
+                  accept=".pdf,.doc,.docx"
+                  onChange={(e) => setResume(e.target.files?.[0] ?? null)}
+                  className="cursor-pointer rounded-none border border-black/15 bg-white px-4 py-3 text-[14px] font-normal normal-case tracking-normal text-ink outline-none transition file:mr-4 file:border-0 file:bg-ink file:px-4 file:py-2 file:text-[12px] file:font-bold file:uppercase file:tracking-[0.14em] file:text-white hover:file:bg-neutral-800 focus:border-accent focus:ring-2 focus:ring-accent/30"
+                />
+              </label>
+            </div>
 
-          <p className="mt-10 max-w-xl text-[14px] leading-relaxed text-neutral-500">
-            Clicking next will take you to your full application form. It takes
-            around fifteen minutes to complete.
-          </p>
+            {errorMsg && (
+              <p className="mt-6 text-[14px] text-accent">{errorMsg}</p>
+            )}
 
-          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-            <button
-              type="submit"
-              disabled={!selected}
-              className="inline-flex min-h-14 items-center justify-center bg-accent px-9 py-4 text-[13px] font-extrabold uppercase tracking-[0.16em] text-white transition hover:bg-[#cf4f22] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Proceed to My Application
-            </button>
-            <Link
-              to="/contact"
-              className="text-[12.5px] font-bold uppercase tracking-[0.16em] text-neutral-600 underline-offset-4 transition hover:text-ink hover:underline"
-            >
-              Or talk to our team first
-            </Link>
-          </div>
-        </form>
+            <p className="mt-10 max-w-xl text-[14px] leading-relaxed text-neutral-500">
+              Clicking next will submit your application to our admissions team.
+            </p>
+
+            <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+              <button
+                type="submit"
+                disabled={!selected || submitting}
+                className="inline-flex min-h-14 items-center justify-center bg-accent px-9 py-4 text-[13px] font-extrabold uppercase tracking-[0.16em] text-white transition hover:bg-[#cf4f22] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {submitting ? 'Sending…' : 'Proceed to My Application'}
+              </button>
+              <Link
+                to="/contact"
+                className="text-[12.5px] font-bold uppercase tracking-[0.16em] text-neutral-600 underline-offset-4 transition hover:text-ink hover:underline"
+              >
+                Or talk to our team first
+              </Link>
+            </div>
+          </form>
+        )}
       </main>
     </>
   )

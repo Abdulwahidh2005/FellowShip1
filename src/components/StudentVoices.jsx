@@ -76,7 +76,7 @@ export default function StudentVoices() {
     <section className="bg-canvas">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[0.58fr_0.42fr] lg:items-center lg:gap-16 lg:px-10 lg:py-28">
         <div
-          className="overflow-hidden border-y border-black/10 py-10"
+          className="overflow-hidden border-y border-black/10 py-10 order-2 lg:order-none"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           onFocus={() => setIsPaused(true)}
@@ -126,7 +126,7 @@ export default function StudentVoices() {
           </div>
         </div>
 
-        <div className="lg:pl-4">
+        <div className="order-1 lg:order-none lg:pl-4">
           <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-accent">
             Student Voices
           </p>

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion } from 'motion/react'
 import Navbar from '../components/Navbar.jsx'
 
-function Field({ label, type = 'text', name, required, placeholder }) {
+function Field({ label, type = 'text', name, required, placeholder, value, onChange }) {
   return (
     <label className="flex flex-col gap-2 text-[13px] font-semibold uppercase tracking-[0.16em] text-neutral-600">
       <span>
@@ -14,6 +14,8 @@ function Field({ label, type = 'text', name, required, placeholder }) {
         name={name}
         required={required}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
         className="rounded-none border border-black/15 bg-white px-4 py-3 text-[15px] font-normal normal-case tracking-normal text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
       />
     </label>
@@ -21,7 +23,47 @@ function Field({ label, type = 'text', name, required, placeholder }) {
 }
 
 export default function ContactPage() {
+  const [form, setForm] = useState({
+    fullName: '',
+    email: '',
+    whatsapp: '',
+    phone: '',
+    question: '',
+  })
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+
+  const update = (key) => (e) =>
+    setForm((f) => ({ ...f, [key]: e.target.value }))
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (submitting) return
+    setSubmitting(true)
+    setErrorMsg('')
+    try {
+      const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT
+      if (!endpoint) throw new Error('Missing VITE_CONTACT_ENDPOINT')
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(form),
+        redirect: 'follow',
+      })
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`)
+      const json = await res.json().catch(() => ({}))
+      if (json.status && json.status !== 'ok') {
+        throw new Error(json.message || 'Submission rejected')
+      }
+      setSubmitted(true)
+    } catch (err) {
+      setErrorMsg(err.message || 'Something went wrong. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <>
@@ -56,28 +98,38 @@ export default function ContactPage() {
             </p>
           </motion.section>
         ) : (
-          <form
-            className="mt-14"
-            onSubmit={(e) => {
-              e.preventDefault()
-              setSubmitted(true)
-            }}
-          >
+          <form className="mt-14" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <Field label="Full Name" name="fullName" required />
+              <Field
+                label="Full Name"
+                name="fullName"
+                required
+                value={form.fullName}
+                onChange={update('fullName')}
+              />
               <Field
                 label="Email Address"
                 type="email"
                 name="email"
                 required
+                value={form.email}
+                onChange={update('email')}
               />
               <Field
                 label="Phone Number (WhatsApp)"
                 type="tel"
                 name="whatsapp"
                 required
+                value={form.whatsapp}
+                onChange={update('whatsapp')}
               />
-              <Field label="Phone Number" type="tel" name="phone" />
+              <Field
+                label="Phone Number"
+                type="tel"
+                name="phone"
+                value={form.phone}
+                onChange={update('phone')}
+              />
             </div>
 
             <label className="mt-6 flex flex-col gap-2 text-[13px] font-semibold uppercase tracking-[0.16em] text-neutral-600">
@@ -90,16 +142,23 @@ export default function ContactPage() {
               <textarea
                 name="question"
                 rows={5}
+                value={form.question}
+                onChange={update('question')}
                 className="rounded-none border border-black/15 bg-white px-4 py-3 text-[15px] font-normal normal-case tracking-normal text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </label>
 
+            {errorMsg && (
+              <p className="mt-4 text-[14px] text-accent">{errorMsg}</p>
+            )}
+
             <div className="mt-8">
               <button
                 type="submit"
-                className="inline-flex min-h-14 items-center justify-center bg-accent px-12 py-4 text-[13px] font-extrabold uppercase tracking-[0.16em] text-white transition hover:bg-[#cf4f22]"
+                disabled={submitting}
+                className="inline-flex min-h-14 items-center justify-center bg-accent px-12 py-4 text-[13px] font-extrabold uppercase tracking-[0.16em] text-white transition hover:bg-[#cf4f22] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Send
+                {submitting ? 'Sending…' : 'Send'}
               </button>
             </div>
           </form>
