@@ -44,7 +44,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="relative flex min-h-[20rem] w-full items-center justify-center sm:min-h-[28rem] lg:justify-end">
+      <div className="relative flex min-h-[24rem] w-full items-center justify-center sm:min-h-[28rem] lg:justify-end">
         <TestimonialStack />
       </div>
     </section>

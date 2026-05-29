@@ -47,7 +47,7 @@ const outcomes = [
 
 export default function Outcomes() {
   return (
-    <section id="outcomes" className="relative z-10 bg-canvas">
+    <section id="outcomes" className="relative z-10 scroll-mt-28 bg-canvas">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[0.42fr_0.58fr] lg:gap-16 lg:px-10 lg:py-28">
         <div className="lg:sticky lg:top-32 lg:h-fit">
           <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-accent">

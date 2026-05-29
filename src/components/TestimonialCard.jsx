@@ -1,16 +1,16 @@
 export default function TestimonialCard({ data }) {
   const { quote, name, role, company, initials, avatarBg, image, verified } = data
   return (
-    <article className="pointer-events-none flex h-full w-full flex-col justify-between rounded-2xl bg-white/70 p-7 text-ink shadow-card ring-1 ring-black/10 backdrop-blur-md select-none">
-      <p className="text-[19.5px] leading-[1.5] text-ink/90">
+    <article className="pointer-events-none flex h-full w-full flex-col justify-between rounded-2xl bg-white/70 p-5 text-ink shadow-card ring-1 ring-black/10 backdrop-blur-md select-none sm:p-7">
+      <p className="text-[15.5px] leading-[1.45] text-ink/90 sm:text-[19.5px] sm:leading-[1.5]">
         &ldquo;{quote}&rdquo;
       </p>
 
-      <div className="mt-7 border-t border-black/10 pt-6">
+      <div className="mt-5 border-t border-black/10 pt-4 sm:mt-7 sm:pt-6">
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
             <span
-              className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-full text-base font-bold text-white"
+              className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full text-base font-bold text-white sm:h-14 sm:w-14"
               style={{ backgroundColor: image ? 'transparent' : avatarBg }}
             >
               {image ? (
@@ -29,7 +29,7 @@ export default function TestimonialCard({ data }) {
             </span>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="truncate text-[18px] font-semibold text-ink">
+                <span className="truncate text-[16px] font-semibold text-ink sm:text-[18px]">
                   {name}
                 </span>
                 {verified && (
@@ -44,12 +44,12 @@ export default function TestimonialCard({ data }) {
                   </svg>
                 )}
               </div>
-              <div className="truncate text-[14.5px] text-neutral-600">
+              <div className="truncate text-[13px] text-neutral-600 sm:text-[14.5px]">
                 {role}
               </div>
             </div>
           </div>
-          <span className="shrink-0 font-serif-italic text-[1.75rem] tracking-tight text-ink">
+          <span className="shrink-0 font-serif-italic text-[1.4rem] tracking-tight text-ink sm:text-[1.75rem]">
             {company}
           </span>
         </div>

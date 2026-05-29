@@ -22,7 +22,7 @@ export default function TestimonialStack() {
         className="relative z-10"
         style={{
           width: 'min(500px, 100%)',
-          height: 'clamp(280px, 78vw, 360px)',
+          height: 'clamp(360px, 80vw, 380px)',
         }}
       >
         <Stack

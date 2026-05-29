@@ -35,7 +35,7 @@ const rightItem = {
 
 export default function WhatRemains() {
   return (
-    <section id="fellowship" className="relative z-10 bg-canvas">
+    <section id="fellowship" className="relative z-10 scroll-mt-28 bg-canvas">
       <div className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
         {/* FULL-WIDTH HEADER — spans both columns */}
         <motion.div

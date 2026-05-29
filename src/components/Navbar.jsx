@@ -12,17 +12,13 @@ const NAV_LINKS = [
 
 function NavLink({ link, className = '', onClick }) {
   const cls = `rounded-full px-3 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 hover:text-ink ${className}`
-  if (link.kind === 'route') {
-    return (
-      <Link to={link.to} className={cls} onClick={onClick}>
-        {link.label}
-      </Link>
-    )
-  }
+  // Both 'route' and 'anchor' links use <Link>. Anchor `to` values like
+  // '/#outcomes' navigate to home and set the hash; ScrollToHash (App.jsx)
+  // handles the smooth scroll, so these work from any route.
   return (
-    <a href={link.to.replace('/', '')} className={cls} onClick={onClick}>
+    <Link to={link.to} className={cls} onClick={onClick}>
       {link.label}
-    </a>
+    </Link>
   )
 }
 
