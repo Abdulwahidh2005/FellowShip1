@@ -7,7 +7,7 @@ const NAV_LINKS = [
   { label: 'The Fellowship', to: '/#fellowship', kind: 'anchor' },
   { label: 'The Journey', to: '/journey', kind: 'route' },
   { label: 'What You Leave With', to: '/#outcomes', kind: 'anchor' },
-  { label: 'How To Join', to: '/apply', kind: 'route' },
+  { label: 'How To Join', to: '/#apply-steps', kind: 'anchor' },
 ]
 
 function NavLink({ link, className = '', onClick }) {

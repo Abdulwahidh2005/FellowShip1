@@ -4,7 +4,7 @@ import TestimonialStack from './TestimonialStack.jsx'
 export default function Hero() {
   return (
     <section className="grid grid-cols-1 items-center gap-16 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
-      <div>
+      <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
         <h1 className="text-[clamp(2.6rem,5.6vw,4.6rem)] font-extrabold leading-[1.02] tracking-[-0.02em]">
           The fellowship that{' '}
           <span className="font-serif-italic font-normal text-accent">
@@ -15,14 +15,14 @@ export default function Hero() {
           </span>
         </h1>
 
-        <p className="mt-7 max-w-xl text-[17px] leading-relaxed text-neutral-600">
+        <p className="mx-auto mt-7 max-w-xl text-[17px] leading-relaxed text-neutral-600 lg:mx-0">
           REACT is a 24-month fellowship for postgraduate students who want
           their degree to produce something real. Six impact domains.
           Structured mentorship. You leave with a research paper, a working
           product, and a venture you own.
         </p>
 
-        <div className="mt-9 flex flex-wrap items-center gap-3">
+        <div className="mt-9 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
           <Link
             to="/apply"
             className="group inline-flex items-center gap-3 rounded-full bg-ink py-2 pl-2 pr-6 text-[15px] font-semibold text-white shadow-card transition hover:bg-neutral-800"

@@ -104,6 +104,9 @@ function Field({ label, type = 'text', name, required, placeholder, value, onCha
   )
 }
 
+const ADMISSIONS_URL =
+  'https://admissions.kumaraguru.edu.in/arts-pg-application-form'
+
 const fileToBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -168,6 +171,8 @@ export default function ApplyPage() {
       setForm({ fullName: '', email: '', phone: '' })
       setResume(null)
       formRef.current?.reset()
+      // Hand the applicant off to the official Kumaraguru admissions form.
+      window.location.href = ADMISSIONS_URL
     } catch (err) {
       setErrorMsg(err.message || 'Something went wrong. Please try again.')
     } finally {
